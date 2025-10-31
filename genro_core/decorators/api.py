@@ -86,7 +86,13 @@ def apiready(
         """Decorator for methods - creates API metadata."""
         # Get function signature and type hints
         sig = inspect.signature(f)
-        type_hints = get_type_hints(f)
+        # Try to get type hints, but if forward references can't be resolved yet
+        # (e.g., class not fully defined), use raw annotations
+        try:
+            type_hints = get_type_hints(f, include_extras=True)
+        except NameError:
+            # Forward references can't be resolved yet, use raw annotations
+            type_hints = f.__annotations__.copy() if hasattr(f, '__annotations__') else {}
 
         # Extract return type
         return_type = type_hints.get("return", Any)
