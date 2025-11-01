@@ -28,7 +28,9 @@ def apiready(
     target: Callable | None = None,
     *,
     path: str | None = None,
-    method: str | None = None
+    method: str | None = None,
+    additem: str | None = None,
+    delitem: str | None = None
 ) -> Callable:
     """Decorator to mark classes and methods as API-ready.
 
@@ -49,6 +51,8 @@ def apiready(
         path: API path (required for classes, optional for methods)
         method: Optional HTTP method for methods ('GET' or 'POST'). If not provided,
                inferred from function name (read*/get*/list* → GET, else POST)
+        additem: Optional name of the method that adds items (for CRUD interfaces)
+        delitem: Optional name of the method that deletes items (for CRUD interfaces)
 
     Returns:
         For classes: Class with _api_base_path attribute set
@@ -70,16 +74,35 @@ def apiready(
 
             @apiready(method='POST')        # → /storage/write_text (POST)
             def write_text(self, path: str, content: str) -> None: ...
+
+        # CRUD interface example
+        @apiready(path="/books", additem="add_book", delitem="delete_book")
+        class BookManager:
+            @apiready
+            def list_books(self) -> list[dict]: ...
+
+            @apiready
+            def add_book(self, title: str, author: str) -> dict: ...
+
+            @apiready
+            def delete_book(self, book_id: int) -> dict: ...
     """
 
     def class_decorator(cls: type) -> type:
-        """Decorator for classes - sets _api_base_path."""
+        """Decorator for classes - sets _api_base_path and CRUD metadata."""
         if path is None:
             raise ValueError(
                 f"@apiready on class {cls.__name__} requires path parameter: "
                 f"@apiready(path='/your-path')"
             )
         cls._api_base_path = path
+
+        # Store CRUD metadata if provided
+        if additem is not None:
+            cls._api_additem = additem
+        if delitem is not None:
+            cls._api_delitem = delitem
+
         return cls
 
     def method_decorator(f: Callable) -> Callable:

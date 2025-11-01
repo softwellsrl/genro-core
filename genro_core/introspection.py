@@ -54,6 +54,12 @@ def get_api_structure(
         "endpoints": []
     }
 
+    # Add CRUD metadata if available
+    if hasattr(target, '_api_additem'):
+        structure["additem"] = target._api_additem
+    if hasattr(target, '_api_delitem'):
+        structure["delitem"] = target._api_delitem
+
     # Add class docstring if available
     if target.__doc__:
         structure["docstring"] = inspect.cleandoc(target.__doc__)
