@@ -13,18 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Genro Core - Core utilities and decorators for Genro framework."""
+"""Database adapters for different SQL engines."""
 
-from .enablers import apiready, PublisherBridge
-from .micro_app import GenroMicroApplication
-from .micro_db import GenroMicroDb, Table
+from .base import DatabaseAdapter
+from .sqlite import SQLiteAdapter
+from .postgres import PostgreSQLAdapter
 
-__version__ = "0.1.0"
-
-__all__ = [
-    "apiready",
-    "PublisherBridge",
-    "Table",
-    "GenroMicroApplication",
-    "GenroMicroDb",
-]
+__all__ = ["DatabaseAdapter", "SQLiteAdapter", "PostgreSQLAdapter"]

@@ -13,18 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Genro Core - Core utilities and decorators for Genro framework."""
+"""API Publisher enablers for Genro framework."""
 
-from .enablers import apiready, PublisherBridge
-from .micro_app import GenroMicroApplication
-from .micro_db import GenroMicroDb, Table
+from .api_publisher_enabler import apiready, PublisherBridge
 
-__version__ = "0.1.0"
-
-__all__ = [
-    "apiready",
-    "PublisherBridge",
-    "Table",
-    "GenroMicroApplication",
-    "GenroMicroDb",
-]
+__all__ = ["apiready", "PublisherBridge"]
